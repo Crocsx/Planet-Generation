@@ -10,6 +10,9 @@ public class Planet : MonoBehaviour
     public ShapeSettings shapeSettings;
     public bool autoUpdate = true;
 
+    Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
+    public enum FaceRenderMask {  All , Top, Bottom, Left, Right, Front, Back};
+    public FaceRenderMask faceRenderMask;
     ShapeGenerator shapeGenerator;
 
     [SerializeField, HideInInspector]
@@ -18,16 +21,16 @@ public class Planet : MonoBehaviour
     private void Initialize()
     {
         shapeGenerator = new ShapeGenerator(shapeSettings);
-        Vector3[] direction = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
+        Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
 
         if (meshFilter == null || meshFilter.Length == 0)
         {
-            meshFilter = new MeshFilter[direction.Length];
+            meshFilter = new MeshFilter[directions.Length];
         }
 
-        terrainFaces = new TerrainFace[direction.Length];
+        terrainFaces = new TerrainFace[directions.Length];
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < directions.Length; i++)
         {
             if(meshFilter[i] == null)
             {
@@ -39,7 +42,9 @@ public class Planet : MonoBehaviour
                 meshFilter[i].sharedMesh = new Mesh();
             }
 
-            terrainFaces[i] = new TerrainFace(shapeGenerator, meshFilter[i].sharedMesh, resolution, direction[i]);
+            terrainFaces[i] = new TerrainFace(shapeGenerator, meshFilter[i].sharedMesh, resolution, directions[i]);
+            bool renderFace = faceRenderMask == FaceRenderMask.All || (int)faceRenderMask - 1 == i;
+            meshFilter[i].gameObject.SetActive(renderFace);
         }
     }
 
@@ -70,9 +75,12 @@ public class Planet : MonoBehaviour
 
     void GenerateMesh()
     {
-        foreach (TerrainFace face in terrainFaces)
+        for (int i = 0; i < directions.Length; i++)
         {
-            face.ConstructMesh();
+            if (meshFilter[i].gameObject.activeSelf)
+            {
+                terrainFaces[i].ConstructMesh();
+            }
         }
     }
 

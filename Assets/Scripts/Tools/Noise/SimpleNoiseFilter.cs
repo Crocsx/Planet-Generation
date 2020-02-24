@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoiseFilter
+public class SimpleNoiseFilter: NoiseFilter
 {
-    Noise noise = new Noise();
-    NoiseSettings settings;
+    protected NoiseSettings.SimpleNoiseSettings settings;
 
-    public NoiseFilter(NoiseSettings settings)
+    public SimpleNoiseFilter(NoiseSettings.SimpleNoiseSettings settings) : base()
     {
         this.settings = settings;
     }
 
-    public float Evaluate(Vector3 point)
+    public override float Evaluate(Vector3 point)
     {
         float noiseValue = 0;
         float frequency = settings.baseRoughness;
