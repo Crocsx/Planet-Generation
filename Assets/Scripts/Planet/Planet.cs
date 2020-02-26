@@ -11,7 +11,7 @@ public class Planet : MonoBehaviour
     public bool autoUpdate = true;
 
     Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
-    public enum FaceRenderMask {  All , Top, Bottom, Left, Right, Front, Back};
+    public enum FaceRenderMask { All, Top, Bottom, Left, Right, Front, Back };
     public FaceRenderMask faceRenderMask;
 
     ShapeGenerator shapeGenerator = new ShapeGenerator();
@@ -36,7 +36,7 @@ public class Planet : MonoBehaviour
 
         for (int i = 0; i < directions.Length; i++)
         {
-            if(meshFilter[i] == null)
+            if (meshFilter[i] == null)
             {
                 GameObject meshObj = new GameObject("mesh");
                 meshObj.transform.parent = transform;
@@ -64,7 +64,7 @@ public class Planet : MonoBehaviour
 
     public void OnColorSettingsUpdate()
     {
-        if(autoUpdate)
+        if (autoUpdate)
         {
             Initialize();
             GenerateColors();
@@ -94,5 +94,12 @@ public class Planet : MonoBehaviour
     void GenerateColors()
     {
         colorGenerator.UpdateColors();
+        for (int i = 0; i < directions.Length; i++)
+        {
+            if (meshFilter[i].gameObject.activeSelf)
+            {
+                terrainFaces[i].UpdateUVs(colorGenerator);
+            }
+        }
     }
 }
