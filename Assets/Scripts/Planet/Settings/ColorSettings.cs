@@ -7,6 +7,7 @@ public class ColorSettings : ScriptableObject
 {
     public Material material;
     public BiomeColorSettings biomeColorSettings;
+    public Gradient oceanColor;
 
     [System.Serializable]
     public class BiomeColorSettings

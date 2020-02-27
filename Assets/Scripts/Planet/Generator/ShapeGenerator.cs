@@ -19,7 +19,7 @@ public class ShapeGenerator: IGenerator<ShapeSettings>
    }
 
     // Update is called once per frame
-    public Vector3 CalculatePointOnPlanet(Vector3 pointOnUnitSphere)
+    public float CalculateUnscaledElevation(Vector3 pointOnUnitSphere)
     {
         float firstLayerValue = 0;
         float elevation = 0;
@@ -40,8 +40,14 @@ public class ShapeGenerator: IGenerator<ShapeSettings>
                 elevation += noiseFilters[i].Evaluate(pointOnUnitSphere) * mask;
             }
         }
-        elevation = settings.radius * (1 + elevation);
         elevationMinMax.AddValue(elevation);
-        return elevation * pointOnUnitSphere;
+        return elevation;
+    }
+
+    public float GetScaledElevation(float unscaledElevation)
+    {
+        float elevation = Mathf.Max(0, unscaledElevation);
+        elevation = settings.radius * (1 + elevation);
+        return elevation;
     }
 }
